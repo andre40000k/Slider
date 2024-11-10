@@ -1,16 +1,16 @@
-(function () { 
-  const container = document.querySelector('#carousel'); 
-  const slides = container.querySelectorAll('.slide'); 
-  const indicatorsContainer = container.querySelector('#indicators-container'); 
+(function () {
+  const container = document.querySelector('#carousel');
+  const slides = container.querySelectorAll('.slide');
+  const indicatorsContainer = container.querySelector('#indicators-container');
   const indicatorItems = container.querySelectorAll('.indicator');
   const pauseBtn = container.querySelector('#pause-btn');
-  const prevBtn = container.querySelector('#prev-btn'); 
-  const nextBtn = container.querySelector('#next-btn'); 
+  const prevBtn = container.querySelector('#prev-btn');
+  const nextBtn = container.querySelector('#next-btn');
 
-  const INTERVAL = 1000; 
-  let currentSlide = 0; 
-  let isPlaying = true; 
-  let timerId = null; 
+  const INTERVAL = 1000;
+  let currentSlide = 0;
+  let isPlaying = true;
+  let timerId = null;
 
   function goToSlide(n) {
     slides[currentSlide].classList.remove('active');
@@ -50,10 +50,10 @@
   function togglePlayPause() {
     isPlaying = !isPlaying;
     if (isPlaying) {
-      stopAutoPlay(); 
+      stopAutoPlay();
     } else {
-      startAutoPlay(); 
-    }  
+      startAutoPlay();
+    }
     changContentBtn();
   }
 
@@ -86,7 +86,6 @@
     initEventListeners();
     startAutoPlay();
   }
-
- init();
-
+  
+  init();
 }());
