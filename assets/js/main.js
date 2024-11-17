@@ -74,11 +74,27 @@ class Carousel {
     }
   }
 
+  swipeStartHandler(event) {
+    this.startPosX = event instanceof MouseEvent ? event.pageX : event.changedTouches[0].pageX
+  }
+
+  swipeEndHandler(event) {
+    this.endPosX = event instanceof MouseEvent ? event.pageX : event.changedTouches[0].pageX
+
+    if (this.endPosX - this.startPosX > 100) this.prevSlideHandler()
+    if (this.endPosX - this.startPosX < -100) this.nextSlideHandler()
+  }
+
   initEventListeners() {
     this.pauseBtn.addEventListener('click', () => this.togglePlayPause())
     this.prevBtn.addEventListener('click', () => this.prevSlideHandler())
     this.nextBtn.addEventListener('click', () => this.nextSlideHandler())
     this.indicatorsContainer.addEventListener('click', (event) => this.indicatorClickHandler(event))
+
+    this.container.addEventListener('touchstart', (event) => this.swipeStartHandler(event))
+    this.container.addEventListener('mousedown', (event) => this.swipeStartHandler(event))
+    this.container.addEventListener('touchend', (event) => this.swipeEndHandler(event))
+    this.container.addEventListener('mouseup', (event) => this.swipeEndHandler(event))
   }
 
   init() {
@@ -87,5 +103,4 @@ class Carousel {
   }
 }
 
-// Инициализация карусели
 new Carousel('#carousel')
