@@ -16,7 +16,7 @@ class Carousel {
     this.init()
   }
 
-  goToSlide(n) {
+  _goToSlide(n) {
     this.slides[this.currentSlide].classList.remove('active')
     this.indicatorItems[this.currentSlide].classList.remove('active')
     this.currentSlide = (n + this.slides.length) % this.slides.length
@@ -24,16 +24,34 @@ class Carousel {
     this.indicatorItems[this.currentSlide].classList.add('active')
   }
 
-  goToPrevSlide() {
-    this.goToSlide(this.currentSlide - 1)
+  _goToPrevSlide() {
+    this._goToSlide(this.currentSlide - 1)
   }
 
-  goToNextSlide() {
-    this.goToSlide(this.currentSlide + 1)
+  _goToNextSlide() {
+    this._goToSlide(this.currentSlide + 1)
+  }
+
+  _prevSlideHandler() {
+    this.stopAutoPlay()
+    this._goToPrevSlide()
+  }
+
+  _nextSlideHandler() {
+    this.stopAutoPlay()
+    this._goToNextSlide()
+  }
+
+  _indicatorClickHandler(event) {
+    const target = event.target
+    if (target.classList.contains('indicator')) {
+      this.stopAutoPlay()
+      this._goToSlide(Number(target.dataset.slideTo))
+    }
   }
 
   startAutoPlay() {
-    this.timerId = setInterval(() => this.goToNextSlide(), this.INTERVAL)
+    this.timerId = setInterval(() => this._goToNextSlide(), this.INTERVAL)
   }
 
   stopAutoPlay() {
@@ -56,24 +74,6 @@ class Carousel {
     this.changeContentBtn()
   }
 
-  prevSlideHandler() {
-    this.stopAutoPlay()
-    this.goToPrevSlide()
-  }
-
-  nextSlideHandler() {
-    this.stopAutoPlay()
-    this.goToNextSlide()
-  }
-
-  indicatorClickHandler(event) {
-    const target = event.target
-    if (target.classList.contains('indicator')) {
-      this.stopAutoPlay()
-      this.goToSlide(Number(target.dataset.slideTo))
-    }
-  }
-
   swipeStartHandler(event) {
     this.startPosX = event instanceof MouseEvent ? event.pageX : event.changedTouches[0].pageX
   }
@@ -81,15 +81,15 @@ class Carousel {
   swipeEndHandler(event) {
     this.endPosX = event instanceof MouseEvent ? event.pageX : event.changedTouches[0].pageX
 
-    if (this.endPosX - this.startPosX > 100) this.prevSlideHandler()
-    if (this.endPosX - this.startPosX < -100) this.nextSlideHandler()
+    if (this.endPosX - this.startPosX > 100) this._prevSlideHandler()
+    if (this.endPosX - this.startPosX < -100) this._nextSlideHandler()
   }
 
   initEventListeners() {
     this.pauseBtn.addEventListener('click', () => this.togglePlayPause())
-    this.prevBtn.addEventListener('click', () => this.prevSlideHandler())
-    this.nextBtn.addEventListener('click', () => this.nextSlideHandler())
-    this.indicatorsContainer.addEventListener('click', (event) => this.indicatorClickHandler(event))
+    this.prevBtn.addEventListener('click', () => this._prevSlideHandler())
+    this.nextBtn.addEventListener('click', () => this._nextSlideHandler())
+    this.indicatorsContainer.addEventListener('click', (event) => this._indicatorClickHandler(event))
 
     this.container.addEventListener('touchstart', (event) => this.swipeStartHandler(event))
     this.container.addEventListener('mousedown', (event) => this.swipeStartHandler(event))
