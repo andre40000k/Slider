@@ -53,6 +53,10 @@ body {
   user-select: none;
 }
 
+.control-btn{
+  user-select: none;
+}
+
 .indicators {
   display: flex;
   gap: 10px;

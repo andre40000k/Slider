@@ -75,11 +75,32 @@
     }
   }
 
+  function swipeStartHandler(e) {
+    startPosX =
+      e instanceof MouseEvent
+        ? e.pageX
+        : e.changedTouches[0].pageX;
+   }
+
+   function swipeEndHandler(e) {
+    endPosX =
+      e instanceof MouseEvent
+        ? e.pageX
+        : e.changedTouches[0].pageX;
+
+    if (endPosX - startPosX > 100) prevSlideHandler();
+    if (endPosX - startPosX < -100) nextSlideHandler();
+   }
+
   function initEventListeners() {
     pauseBtn.addEventListener('click', togglePlayPause);
     prevBtn.addEventListener('click', prevSlideHandler);
     nextBtn.addEventListener('click', nextSlideHandler);
     indicatorsContainer.addEventListener('click', indicatorClickHandler);
+    container.addEventListener('touchstart', swipeStartHandler);
+    container.addEventListener('mousedown', swipeStartHandler);
+    container.addEventListener('touchend', swipeEndHandler);
+    container.addEventListener('mouseup', swipeEndHandler);
   }
 
   function init() {
