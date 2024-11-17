@@ -1,5 +1,5 @@
-;(function () {
-  function Carousel(containerSelector) {
+class Carousel {
+  constructor(containerSelector) {
     this.container = document.querySelector(containerSelector)
     this.slides = this.container.querySelectorAll('.slide')
     this.indicatorsContainer = this.container.querySelector('#indicators-container')
@@ -16,7 +16,7 @@
     this.init()
   }
 
-  Carousel.prototype.goToSlide = function (n) {
+  goToSlide(n) {
     this.slides[this.currentSlide].classList.remove('active')
     this.indicatorItems[this.currentSlide].classList.remove('active')
     this.currentSlide = (n + this.slides.length) % this.slides.length
@@ -24,29 +24,29 @@
     this.indicatorItems[this.currentSlide].classList.add('active')
   }
 
-  Carousel.prototype.goToPrevSlide = function () {
+  goToPrevSlide() {
     this.goToSlide(this.currentSlide - 1)
   }
 
-  Carousel.prototype.goToNextSlide = function () {
+  goToNextSlide() {
     this.goToSlide(this.currentSlide + 1)
   }
 
-  Carousel.prototype.startAutoPlay = function () {
-    this.timerId = setInterval(this.goToNextSlide.bind(this), this.INTERVAL)
+  startAutoPlay() {
+    this.timerId = setInterval(() => this.goToNextSlide(), this.INTERVAL)
   }
 
-  Carousel.prototype.stopAutoPlay = function () {
+  stopAutoPlay() {
     clearInterval(this.timerId)
     this.isPlaying = true
     this.changeContentBtn()
   }
 
-  Carousel.prototype.changeContentBtn = function () {
+  changeContentBtn() {
     this.pauseBtn.textContent = this.isPlaying ? 'Play' : 'Pause'
   }
 
-  Carousel.prototype.togglePlayPause = function () {
+  togglePlayPause() {
     this.isPlaying = !this.isPlaying
     if (this.isPlaying) {
       this.stopAutoPlay()
@@ -56,17 +56,17 @@
     this.changeContentBtn()
   }
 
-  Carousel.prototype.prevSlideHandler = function () {
+  prevSlideHandler() {
     this.stopAutoPlay()
     this.goToPrevSlide()
   }
 
-  Carousel.prototype.nextSlideHandler = function () {
+  nextSlideHandler() {
     this.stopAutoPlay()
     this.goToNextSlide()
   }
 
-  Carousel.prototype.indicatorClickHandler = function (event) {
+  indicatorClickHandler(event) {
     const target = event.target
     if (target.classList.contains('indicator')) {
       this.stopAutoPlay()
@@ -74,18 +74,18 @@
     }
   }
 
-  Carousel.prototype.initEventListeners = function () {
-    this.pauseBtn.addEventListener('click', this.togglePlayPause.bind(this))
-    this.prevBtn.addEventListener('click', this.prevSlideHandler.bind(this))
-    this.nextBtn.addEventListener('click', this.nextSlideHandler.bind(this))
-    this.indicatorsContainer.addEventListener('click', this.indicatorClickHandler.bind(this))
+  initEventListeners() {
+    this.pauseBtn.addEventListener('click', () => this.togglePlayPause())
+    this.prevBtn.addEventListener('click', () => this.prevSlideHandler())
+    this.nextBtn.addEventListener('click', () => this.nextSlideHandler())
+    this.indicatorsContainer.addEventListener('click', (event) => this.indicatorClickHandler(event))
   }
 
-  Carousel.prototype.init = function () {
+  init() {
     this.initEventListeners()
     this.startAutoPlay()
   }
+}
 
-  // Инициализация карусели
-  new Carousel('#carousel')
-})()
+// Инициализация карусели
+new Carousel('#carousel')
