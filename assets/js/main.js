@@ -1,91 +1,91 @@
-(function () {
-  const container = document.querySelector('#carousel');
-  const slides = container.querySelectorAll('.slide');
-  const indicatorsContainer = container.querySelector('#indicators-container');
-  const indicatorItems = container.querySelectorAll('.indicator');
-  const pauseBtn = container.querySelector('#pause-btn');
-  const prevBtn = container.querySelector('#prev-btn');
-  const nextBtn = container.querySelector('#next-btn');
+;(function () {
+  function Carousel(containerSelector) {
+    this.container = document.querySelector(containerSelector)
+    this.slides = this.container.querySelectorAll('.slide')
+    this.indicatorsContainer = this.container.querySelector('#indicators-container')
+    this.indicatorItems = this.container.querySelectorAll('.indicator')
+    this.pauseBtn = this.container.querySelector('#pause-btn')
+    this.prevBtn = this.container.querySelector('#prev-btn')
+    this.nextBtn = this.container.querySelector('#next-btn')
 
-  const INTERVAL = 1000;
-  let currentSlide = 0;
-  let isPlaying = true;
-  let timerId = null;
+    this.INTERVAL = 1000
+    this.currentSlide = 0
+    this.isPlaying = true
+    this.timerId = null
 
-  function goToSlide(n) {
-    slides[currentSlide].classList.remove('active');
-    indicatorItems[currentSlide].classList.remove('active');
-    currentSlide = (n + slides.length) % slides.length;
-    slides[currentSlide].classList.add('active');
-    indicatorItems[currentSlide].classList.add('active');
+    this.init()
   }
 
-  function goToPrevSlide() {
-    goToSlide(currentSlide - 1);
+  Carousel.prototype.goToSlide = function (n) {
+    this.slides[this.currentSlide].classList.remove('active')
+    this.indicatorItems[this.currentSlide].classList.remove('active')
+    this.currentSlide = (n + this.slides.length) % this.slides.length
+    this.slides[this.currentSlide].classList.add('active')
+    this.indicatorItems[this.currentSlide].classList.add('active')
   }
 
-  function goToNextSlide() {
-    goToSlide(currentSlide + 1);
+  Carousel.prototype.goToPrevSlide = function () {
+    this.goToSlide(this.currentSlide - 1)
   }
 
-  function startAutoPlay() {
-    timerId = setInterval(goToNextSlide, INTERVAL);
+  Carousel.prototype.goToNextSlide = function () {
+    this.goToSlide(this.currentSlide + 1)
   }
 
-  function stopAutoPlay() {
-    isPlaying = true;
-    clearInterval(timerId);
-    changContentBtn();
+  Carousel.prototype.startAutoPlay = function () {
+    this.timerId = setInterval(this.goToNextSlide.bind(this), this.INTERVAL)
   }
 
-  function changContentBtn()
-  {
-    if (isPlaying) {
-      pauseBtn.textContent = 'Play';
+  Carousel.prototype.stopAutoPlay = function () {
+    clearInterval(this.timerId)
+    this.isPlaying = true
+    this.changeContentBtn()
+  }
+
+  Carousel.prototype.changeContentBtn = function () {
+    this.pauseBtn.textContent = this.isPlaying ? 'Play' : 'Pause'
+  }
+
+  Carousel.prototype.togglePlayPause = function () {
+    this.isPlaying = !this.isPlaying
+    if (this.isPlaying) {
+      this.stopAutoPlay()
     } else {
-      pauseBtn.textContent = 'Pause';
+      this.startAutoPlay()
     }
+    this.changeContentBtn()
   }
 
-  function togglePlayPause() {
-    isPlaying = !isPlaying;
-    if (isPlaying) {
-      stopAutoPlay();
-    } else {
-      startAutoPlay();
-    }
-    changContentBtn();
+  Carousel.prototype.prevSlideHandler = function () {
+    this.stopAutoPlay()
+    this.goToPrevSlide()
   }
 
-  function prevSlideHandler() {
-    stopAutoPlay();
-    goToPrevSlide();
+  Carousel.prototype.nextSlideHandler = function () {
+    this.stopAutoPlay()
+    this.goToNextSlide()
   }
 
-  function nextSlideHandler() {
-    stopAutoPlay();
-    goToNextSlide();
-  }
-
-  function indicatorClickHandler(event) {
-    const target = event.target;
+  Carousel.prototype.indicatorClickHandler = function (event) {
+    const target = event.target
     if (target.classList.contains('indicator')) {
-      stopAutoPlay();
-      goToSlide(Number(target.dataset.slideTo));
+      this.stopAutoPlay()
+      this.goToSlide(Number(target.dataset.slideTo))
     }
   }
 
-  function initEventListeners() {
-    pauseBtn.addEventListener('click', togglePlayPause);
-    prevBtn.addEventListener('click', prevSlideHandler);
-    nextBtn.addEventListener('click', nextSlideHandler);
-    indicatorsContainer.addEventListener('click', indicatorClickHandler);
+  Carousel.prototype.initEventListeners = function () {
+    this.pauseBtn.addEventListener('click', this.togglePlayPause.bind(this))
+    this.prevBtn.addEventListener('click', this.prevSlideHandler.bind(this))
+    this.nextBtn.addEventListener('click', this.nextSlideHandler.bind(this))
+    this.indicatorsContainer.addEventListener('click', this.indicatorClickHandler.bind(this))
   }
 
-  function init() {
-    initEventListeners();
-    startAutoPlay();
+  Carousel.prototype.init = function () {
+    this.initEventListeners()
+    this.startAutoPlay()
   }
-  
-  init();
-}());
+
+  // Инициализация карусели
+  new Carousel('#carousel')
+})()
