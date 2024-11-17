@@ -54,7 +54,7 @@ body {
 }
 
 .control-btn{
-  /* user-select: none; */
+  user-select: none;
 }
 
 .indicators {
